@@ -1,10 +1,13 @@
 use crate::prelude::*;
 
 
+/// 'Manages' opengl program objects.
+/// NOTE: won't attempt to delete anything - that is left as an exercise for the reader.
 #[derive(Copy, Clone, Debug)]
 pub struct ShaderProgram (u32);
 
 impl ShaderProgram {
+	/// Compile and link a `ShaderProgram` from vertex and fragment shader source.
 	pub fn new_simple(vsrc: &str, fsrc: &str) -> Result<ShaderProgram, CompilationError> {
 		compile_shaders(&[
 			(gl::VERTEX_SHADER, vsrc),
@@ -12,12 +15,14 @@ impl ShaderProgram {
 		])
 	}
 
+	/// Compile and link a `ShaderProgram` from compute shader source.
 	pub fn new_compute(src: &str) -> Result<ShaderProgram, CompilationError> {
 		compile_shaders(&[
 			(gl::COMPUTE_SHADER, src),
 		])
 	}
 
+	/// Bind this program as the active program.
 	pub fn bind(&self) {
 		unsafe {
 			gl::UseProgram(self.0);
@@ -26,6 +31,7 @@ impl ShaderProgram {
 }
 
 
+/// Don't look too hard at this.
 fn compile_shaders(shaders: &[(u32, &str)]) -> Result<ShaderProgram, CompilationError> {
 	use std::ffi::CString;
 	use std::str;
